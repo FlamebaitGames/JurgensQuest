@@ -6,6 +6,7 @@ using UnityEditor;
 
 public class Character : MonoBehaviour {
     private Rigidbody2D rBody;
+    private FixedJoint joint;
 	// Use this for initialization
 	void Start () {
         rBody = GetComponent<Rigidbody2D>();
@@ -21,6 +22,13 @@ public class Character : MonoBehaviour {
         if (Input.GetButtonUp("Grav"))
         {
             rBody.gravityScale /= 2;
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            //rBody.AddTorque(300.0f);
+            foreach(Rigidbody2D r in transform.parent.GetComponentsInChildren<Rigidbody2D>()) {
+                r.AddForceAtPosition(Vector2.up * 900, rBody.position - (Vector2)(transform.right * 3.0f));
+            }
         }
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
