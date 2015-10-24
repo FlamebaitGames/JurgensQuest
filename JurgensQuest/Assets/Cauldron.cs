@@ -7,6 +7,7 @@ public class Cauldron : MonoBehaviour {
     private Rigidbody2D rbody;
     private float lastVel;
     public float bumpTreshold = 15.0f;
+    public float bumpAngleThreshold = 20.0f;
     public float velocityThreshold = 1.0f;
     public int nChildren = 20;
 
@@ -46,7 +47,7 @@ public class Cauldron : MonoBehaviour {
     {
         foreach (ContactPoint2D c in coll.contacts) // Check if the impact velocity is beyond threshold
         {
-            if (Vector3.Project(coll.relativeVelocity, c.normal).magnitude > bumpTreshold)
+            if (Vector3.Angle(c.normal, rbody.velocity.normalized) > bumpAngleThreshold && Vector3.Project(coll.relativeVelocity, c.normal).magnitude > bumpTreshold)
             {
                 StartCoroutine(ChildrenOverboard(7));
             }

@@ -11,6 +11,7 @@ public class TrackGenerator : MonoBehaviour {
     private EdgeCollider2D collider;
     public Segment segmentPrefab;
     private LineRenderer lineRender;
+    private Mesh mesh;
 
 	void Start () {
         collider = GetComponent<EdgeCollider2D>();
@@ -22,8 +23,78 @@ public class TrackGenerator : MonoBehaviour {
         lineRender.enabled = false;
 #endif
         InitializeNodes();
+        GenerateMesh();
+       
 	}
+    [ContextMenu("Generate Mesh")]
+    private void GenerateMesh()
+    {
+        mesh = new Mesh();
+        Vector3[] vertices = new Vector3[list.Count * 2 + 2]; //
+        Vector3[] normals = new Vector3[list.Count * 2 + 2];
+        vertices[0] = transform.forward * 10.0f;
+        vertices[1] = -transform.forward * 10.0f;
+        normals[0] = transform.up;
+        normals[1] = transform.up;
+        Vector2[] newUV;
 
+        for (int i = 0; i < list.Count; i++)
+        {
+            vertices[i * 2 + 2] = list[i].transform.localPosition + transform.forward * 10.0f;
+            vertices[i * 2 + 3] = list[i].transform.localPosition - transform.forward * 10.0f;
+
+        }
+        /*for (int i = 0; i < vertices.Length; i++)
+        {
+
+            Vector3 normal = Vector3.zero;
+            if (i > 1) normal += Vector3.Cross(vertices[i], vertices[i - 2]);
+            if (i < vertices.Length - 2) normal += Vector3.Cross(vertices[i], vertices[i + 2]);
+            Debug.Log(normal.normalized);
+            normals[i] = normal.normalized;
+        }*/
+        Debug.Log(vertices[vertices.Length - 1]);
+        Debug.Log(vertices[vertices.Length - 2]);
+        Debug.Log(vertices[vertices.Length - 3]);
+        Debug.Log(vertices[vertices.Length - 4]);
+        int[] triangles = new int[(vertices.Length - 2) * 6];
+        Debug.Log(triangles.Length);
+
+        for (int i = 0; i < (vertices.Length - 2); i = i + 2)
+        {
+            triangles[i * 6] = i + 3;
+            triangles[i * 6 + 1] = i + 1;
+            triangles[i * 6 + 2] = i;
+            Debug.Log(i + " : " + (i + 1) + " : " + (i + 3));
+            triangles[i * 6 + 3] = i + 2;
+            triangles[i * 6 + 4] = i + 3;
+            triangles[i * 6 + 5] = i;
+            Debug.Log((i) + " : " + (i + 3) + " : " + (i + 2)); Debug.Log(i);
+        }
+
+        //Debug.Log(triangles[0]);
+        Debug.Log(triangles[triangles.Length - 1]);
+        Debug.Log(triangles[triangles.Length - 2]);
+        Debug.Log(triangles[triangles.Length - 3]);
+        Debug.Log(vertices.Length);
+        mesh.vertices = vertices;
+        //mesh.normals = normals;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        /*bool switsch = false;
+            
+        Vector3[] n = mesh.normals;
+        for(int i = 0; i < n.Length; i++)
+        {
+            if (switsch) n[i] = -n[i];
+            switsch = !switsch;
+        }
+        mesh.normals = n;
+        mesh.RecalculateNormals();*/
+
+        GetComponent<MeshFilter>().mesh = mesh;
+            
+    }
 	void Update () {
 #if UNITY_EDITOR // So that we can see our nodes and path
         if (!Application.isPlaying)
@@ -38,7 +109,7 @@ public class TrackGenerator : MonoBehaviour {
             last = s.transform;
         }
 #endif
-
+        
 	}
 
 
@@ -60,7 +131,7 @@ public class TrackGenerator : MonoBehaviour {
             Vector3 a = middle.position - back;
             Vector3 b = s.transform.position - middle.position;
             float angle = Vector3.Angle(a, b);
-            if (0.5f < angle && angle < 30.0f && middle != transform)
+            if (5.0f < angle && angle < 30.0f && middle != transform)
             {
                 GameObject g = new GameObject();
                 g.AddComponent<Segment>();

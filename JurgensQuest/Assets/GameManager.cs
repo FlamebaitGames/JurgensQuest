@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
     public GameObject playerPrefab;
     public Transform playerSpawnPoint;
     private GameObject player = null;
+
     public Follower cameraFollower;
     public Timer raceTimer;
 	// Use this for initialization
@@ -32,5 +33,6 @@ public class GameManager : MonoBehaviour {
         player.transform.position = playerSpawnPoint.position;
         cameraFollower.target = player.GetComponentInChildren<Character>().transform;
         raceTimer.StartTimer();
+        GameObject.Find("Environment").SendMessage("Reset");
     }
 }
