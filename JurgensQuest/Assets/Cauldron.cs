@@ -40,6 +40,8 @@ public class Cauldron : MonoBehaviour {
         }
             yield return null;
     }
+    
+
     void OnCollisionEnter2D(Collision2D coll)
     {
         foreach (ContactPoint2D c in coll.contacts) // Check if the impact velocity is beyond threshold
