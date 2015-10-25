@@ -29,11 +29,13 @@ public class GameManager : MonoBehaviour {
         }
 	}
 
+
     public void PlayerCaught()
     {
         foreach( Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>() ) {
             body.drag = 300.0f;
         }
+        raceTimer.paused = true;
         menuPanel.SetActive(true);
     }
 
