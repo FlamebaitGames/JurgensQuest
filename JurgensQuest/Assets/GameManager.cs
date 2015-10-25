@@ -4,11 +4,15 @@ using System.Collections;
 public class GameManager : MonoBehaviour {
     public static GameManager inst { get; private set; }
     public GameObject playerPrefab;
+    public GameObject menuPanel;
+    public Timer raceTimer;
+
     public Transform playerSpawnPoint;
+    public Follower cameraFollower;
+
     private GameObject player = null;
     private GameObject env;
-    public Follower cameraFollower;
-    public Timer raceTimer;
+
 	// Use this for initialization
 	void Start () {
         inst = this;
@@ -19,8 +23,18 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    
+        if (Input.GetButtonDown("Cancel"))
+        {
+            menuPanel.SetActive(!menuPanel.activeSelf);
+        }
 	}
+
+    public void PlayerCaught()
+    {
+        foreach( Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>() ) {
+            body.drag = 300.0f;
+        }
+    }
 
     public void Finish()
     {
