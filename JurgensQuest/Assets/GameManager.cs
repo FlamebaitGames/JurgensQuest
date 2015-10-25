@@ -6,13 +6,14 @@ public class GameManager : MonoBehaviour {
     public GameObject playerPrefab;
     public Transform playerSpawnPoint;
     private GameObject player = null;
-
+    private GameObject env;
     public Follower cameraFollower;
     public Timer raceTimer;
 	// Use this for initialization
 	void Start () {
         inst = this;
         if (playerPrefab == null) Debug.LogError("PleyerPrefab is null!");
+        env = GameObject.Find("Environment");
         Restart();
 	}
 	
@@ -33,6 +34,6 @@ public class GameManager : MonoBehaviour {
         player.transform.position = playerSpawnPoint.position;
         cameraFollower.target = player.GetComponentInChildren<Character>().transform;
         raceTimer.StartTimer();
-        GameObject.Find("Environment").SendMessage("Reset");
+        if(env != null) env.SendMessage("Reset");
     }
 }
