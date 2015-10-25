@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour {
         foreach( Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>() ) {
             body.drag = 300.0f;
         }
+        menuPanel.SetActive(true);
     }
 
     public void Finish()
@@ -49,5 +50,15 @@ public class GameManager : MonoBehaviour {
         cameraFollower.target = player.GetComponentInChildren<Character>().transform;
         raceTimer.StartTimer();
         if(env != null) env.SendMessage("Reset");
+    }
+
+    public void Quit()
+    {
+        Application.LoadLevel(0);
+    }
+
+    public void ExitToDesktop()
+    {
+        Application.Quit();
     }
 }
