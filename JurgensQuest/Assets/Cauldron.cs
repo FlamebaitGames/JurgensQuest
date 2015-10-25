@@ -15,6 +15,7 @@ public class Cauldron : MonoBehaviour {
     public float childrenPerNewton = 1.0f;
     public int nChildren = 20;
     public AudioClip[] bounceSounds;
+    private int nStartChildren;
     private bool grounded
     {
         get
@@ -28,6 +29,7 @@ public class Cauldron : MonoBehaviour {
         joint = GetComponent<DistanceJoint2D>();
         rbody = GetComponent<Rigidbody2D>();
         lastVel = rbody.velocity;
+        nStartChildren = nChildren;
         //joint.GetReactionTorque
 	}
     void Update()
@@ -64,6 +66,12 @@ public class Cauldron : MonoBehaviour {
             o.position = transform.position;
             o.velocity = Vector2.up * 10.0f;
             nChildren--;
+            int nRepresentatives = transform.childCount;
+            int nVisible = Mathf.CeilToInt((float)nRepresentatives * ((float)nChildren / (float)nStartChildren));
+            for (int j = 0; j < transform.childCount; j++)
+            {
+                transform.GetChild(j).gameObject.SetActive(j < nVisible);
+            }
             yield return new WaitForSeconds(Random.Range(0.0f, 0.2f));
         }
             yield return null;
