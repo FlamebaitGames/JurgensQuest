@@ -8,6 +8,7 @@ public class Character : MonoBehaviour {
     private Rigidbody2D rBody;
     private FixedJoint joint;
     private Animator animator;
+    private float volumeinterp = 0.0f;
     private float flying = 0.0f;
 	public float gravMultiplier = 2.0f;
     private bool grounded
@@ -27,6 +28,7 @@ public class Character : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        animator.SetFloat("Speed", rBody.velocity.magnitude);
         if (Input.GetButtonDown("Grav"))
         {
 			rBody.gravityScale *= gravMultiplier;
@@ -59,8 +61,18 @@ public class Character : MonoBehaviour {
             PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
         }
 #endif
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Floor"));
+        if (hit.collider != null)
+        {
+            volumeinterp = Mathf.MoveTowards(volumeinterp, hit.distance / 1000.0f, Time.deltaTime * 0.6f);
+        }
+
+        GetComponent<AudioSource>().volume = volumeinterp;
     }
 
+
+    
     /*void OnCollisionEnter2D(Collision2D coll)
     {
         Debug.Log("GROUNDED");

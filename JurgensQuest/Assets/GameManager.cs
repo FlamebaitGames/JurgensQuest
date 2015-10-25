@@ -1,17 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+[RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour {
     public static GameManager inst { get; private set; }
     public GameObject playerPrefab;
     public GameObject menuPanel;
     public Timer raceTimer;
 
+
+    public AudioClip beginSound;
+    public AudioClip[] loseSounds;
+    public AudioClip[] winSounds;
+
     public Transform playerSpawnPoint;
     public Follower cameraFollower;
 
     private GameObject player = null;
     private GameObject env;
+
+    private bool gameEnded = false;
+    
 
 	// Use this for initialization
 	void Start () {
@@ -32,26 +40,43 @@ public class GameManager : MonoBehaviour {
 
     public void PlayerCaught()
     {
-        foreach( Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>() ) {
-            body.drag = 300.0f;
-        }
-        raceTimer.paused = true;
+        if (gameEnded) return;
+        gameEnded = true;
+        Freeze();
+        
         menuPanel.SetActive(true);
+        PlayRandom(loseSounds);
     }
 
     public void Finish()
     {
-        Restart();
+        if (gameEnded) return;
+        gameEnded = true;
+        PlayRandom(winSounds);
+        menuPanel.SetActive(true);
+        Freeze();
+        //Restart();
+    }
+
+    private void Freeze()
+    {
+        foreach (Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>())
+        {
+            body.drag = 300.0f;
+        }
+        raceTimer.paused = true;
     }
 
     public void Restart()
     {
+        gameEnded = false;
         if (player != null) Destroy(player);
         player = Instantiate<GameObject>(playerPrefab);
         player.transform.position = playerSpawnPoint.position;
         cameraFollower.target = player.GetComponentInChildren<Character>().transform;
         raceTimer.StartTimer();
         if(env != null) env.SendMessage("Reset");
+        GetComponent<AudioSource>().PlayOneShot(beginSound);
     }
 
     public void Quit()
@@ -62,5 +87,12 @@ public class GameManager : MonoBehaviour {
     public void ExitToDesktop()
     {
         Application.Quit();
+    }
+
+
+    public void PlayRandom(AudioClip[] clips)
+    {
+        if (clips.Length == 0) return;
+        GetComponent<AudioSource>().PlayOneShot(clips[Random.Range(0, clips.Length - 1)]);
     }
 }
