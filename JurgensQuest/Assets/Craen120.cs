@@ -55,18 +55,20 @@ public class Craen120 : MonoBehaviour {
         {
             light.transform.rotation = Quaternion.Slerp(light.transform.rotation, Quaternion.Euler(60.0f, 90.0f, 0.0f), Time.deltaTime);
         }
-        if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
+        
+        if ((target.transform.position - transform.position).x < 3.0f)
+        {
+            GameManager.inst.PlayerCaught();
+            damping = 0.5f;
+            ratatat = false;
+        }
+        else if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
         {
             StartRatTatTat();
         }
         else
         {
             ratatat = false;
-        }
-        if ((target.transform.position - transform.position).x < 3.0f)
-        {
-            GameManager.inst.PlayerCaught();
-            damping = 0.5f;
         }
     }
 
@@ -129,7 +131,6 @@ public class Craen120 : MonoBehaviour {
 
     private IEnumerator Ratatat()
     {
-        yield return null;
         ratatating = true;
         while (ratatat)
         {

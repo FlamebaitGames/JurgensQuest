@@ -28,7 +28,7 @@ public class TrackGenerator : MonoBehaviour {
         vertices[1] = -transform.forward * 10.0f;
         normals[0] = transform.up;
         normals[1] = transform.up;
-        Vector2[] newUV;
+        Vector2[] newUV = new Vector2[vertices.Length];
 
         for (int i = 0; i < list.Count; i++)
         {
@@ -58,6 +58,11 @@ public class TrackGenerator : MonoBehaviour {
         }
         mesh.vertices = vertices;
         //mesh.normals = normals;
+        for (int i = 0; i < newUV.Length; i++)
+        {
+            newUV[i] = new Vector2(vertices[i].x, vertices[i].z);
+        }
+        mesh.uv = newUV;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         /*bool switsch = false;
