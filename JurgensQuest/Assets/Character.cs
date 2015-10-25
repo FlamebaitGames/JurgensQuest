@@ -8,6 +8,7 @@ public class Character : MonoBehaviour {
     private Rigidbody2D rBody;
     private FixedJoint joint;
     private Animator animator;
+    
     private float flying = 0.0f;
 	public float gravMultiplier = 2.0f;
     private bool grounded
@@ -27,6 +28,7 @@ public class Character : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        animator.SetFloat("Speed", rBody.velocity.magnitude);
         if (Input.GetButtonDown("Grav"))
         {
 			rBody.gravityScale *= gravMultiplier;
@@ -61,6 +63,8 @@ public class Character : MonoBehaviour {
 #endif
     }
 
+
+    
     /*void OnCollisionEnter2D(Collision2D coll)
     {
         Debug.Log("GROUNDED");
