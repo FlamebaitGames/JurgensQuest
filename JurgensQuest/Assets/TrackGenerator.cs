@@ -28,13 +28,19 @@ public class TrackGenerator : MonoBehaviour {
         vertices[1] = -transform.forward * 10.0f;
         normals[0] = transform.up;
         normals[1] = transform.up;
-        Vector2[] newUV;
+        Vector2[] newUV = new Vector2[vertices.Length];
+
+        Vector3 min = Vector3.Min(vertices[0], vertices[1]);
+        Vector3 max = Vector3.Max(vertices[0], vertices[1]);
 
         for (int i = 0; i < list.Count; i++)
         {
             vertices[i * 2 + 2] = list[i].transform.localPosition + transform.forward * 10.0f;
             vertices[i * 2 + 3] = list[i].transform.localPosition - transform.forward * 10.0f;
-
+            min = Vector3.Min(min, vertices[i * 2 + 2]);
+            max = Vector3.Max(max, vertices[i * 2 + 2]);
+            min = Vector3.Min(min, vertices[i * 2 + 3]);
+            max = Vector3.Max(max, vertices[i * 2 + 3]);
         }
         /*for (int i = 0; i < vertices.Length; i++)
         {
@@ -58,6 +64,23 @@ public class TrackGenerator : MonoBehaviour {
         }
         mesh.vertices = vertices;
         //mesh.normals = normals;
+        Vector2 last0 = Vector2.zero;
+        Vector2 last1 = Vector2.zero;
+        for (int i = 0; i < newUV.Length-1; i+=2) // / (max.z - min.z) // /( max.x - min.x) // Mathf.Sqrt(vertices[i].x * vertices[i].x + vertices[i].y * vertices[i].y)
+        {
+            float x0 = vertices[i+1].x - last0.x;
+            float y0 = vertices[i+1].y - last0.y;
+            newUV[i] = new Vector2(last0.x + Mathf.Sqrt(x0 * x0 + y0 * y0), vertices[i].z);
+            last0 = new Vector2(vertices[i+1].x, vertices[i+1].y);
+
+            float x1 = vertices[i].x - last1.x;
+            float y1 = vertices[i].y - last1.y;
+
+            newUV[i + 1] = new Vector2(last1.x + Mathf.Sqrt(x0 * x0 + y0 * y0), vertices[i+1].z);
+            last1 = new Vector2(vertices[i].x, vertices[i].y);
+        }
+        mesh.uv = newUV;
+        
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         /*bool switsch = false;
@@ -72,7 +95,7 @@ public class TrackGenerator : MonoBehaviour {
         mesh.RecalculateNormals();*/
 
         GetComponent<MeshFilter>().mesh = mesh;
-            
+        mesh.UploadMeshData(true);
     }
 #endif
 
