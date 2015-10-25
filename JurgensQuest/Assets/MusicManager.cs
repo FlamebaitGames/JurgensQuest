@@ -8,10 +8,15 @@ public class MusicManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		musicInit.Play ();
-		musicLoop.PlayDelayed ((ulong)musicInit.clip.samples);
+        //Restart();
 		//audio.PlayScheduled (musicInit.length);
 	}
+
+    public void Restart()
+    {
+        musicInit.Play();
+        musicLoop.PlayDelayed((ulong)musicInit.clip.samples);
+    }
 	
 	// Update is called once per frame
 	void Update () {

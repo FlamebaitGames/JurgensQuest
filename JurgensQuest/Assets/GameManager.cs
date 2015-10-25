@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviour {
         raceTimer.StartTimer();
         if(env != null) env.SendMessage("Reset");
         GetComponent<AudioSource>().PlayOneShot(beginSound);
+        FindObjectOfType<MusicManager>().Restart();
     }
 
     public void Quit()
