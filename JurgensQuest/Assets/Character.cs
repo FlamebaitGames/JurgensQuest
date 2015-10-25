@@ -8,7 +8,7 @@ public class Character : MonoBehaviour {
     private Rigidbody2D rBody;
     private FixedJoint joint;
     private Animator animator;
-    
+    private float volumeinterp = 0.0f;
     private float flying = 0.0f;
 	public float gravMultiplier = 2.0f;
     private bool grounded
@@ -61,6 +61,14 @@ public class Character : MonoBehaviour {
             PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
         }
 #endif
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Floor"));
+        if (hit.collider != null)
+        {
+            volumeinterp = Mathf.MoveTowards(volumeinterp, hit.distance / 1000.0f, Time.deltaTime * 0.6f);
+        }
+
+        GetComponent<AudioSource>().volume = volumeinterp;
     }
 
 
