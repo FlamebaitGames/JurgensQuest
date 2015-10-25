@@ -9,7 +9,7 @@ public class MusicManager : MonoBehaviour {
 	void Start () {
 
 		musicInit.Play ();
-		musicLoop.Play ((ulong)musicInit.clip.samples);
+		musicLoop.PlayDelayed ((ulong)musicInit.clip.samples);
 		//audio.PlayScheduled (musicInit.length);
 	}
 	
