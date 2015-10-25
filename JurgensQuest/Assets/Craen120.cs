@@ -4,7 +4,7 @@ using System.Collections;
 public class Craen120 : MonoBehaviour {
 
 
-    private Vector3 startPosition = new Vector3(0, 10, 0);
+    private Vector3 startPosition { get { return Vector3.up * optimalDist; } }
     public float mass = 1.0f;
     private float damping = 0.0f;
     private float invMass;
@@ -13,6 +13,12 @@ public class Craen120 : MonoBehaviour {
     public float springK = 10.0f;
     public float followFactor = 0.5f;
     public float maxFollowSpeed = 1.5f;
+    public float optimalDist = 10.0f;
+
+    private bool ratatat = false;
+    private bool ratatating = false;
+
+    private Light light;
 
     public float xVelocity { get { return Vector3.Project((transform.position - prevPos) * (1.0f / Time.fixedDeltaTime), Vector3.right).magnitude; } }
 
@@ -21,12 +27,12 @@ public class Craen120 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         invMass = 1.0f / mass;
-        
+        light = GetComponentInChildren<Light>();
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        Debug.Log(xVelocity);
+        //Debug.Log(xVelocity);
         
         AddSpringForce();
 
@@ -34,25 +40,62 @@ public class Craen120 : MonoBehaviour {
         prevPos = transform.position;
         transform.position = nPos;
         force = Vector3.zero;
-        if ((target.transform.position - transform.position).x < 0.0f)
+        
+
+        
+    }
+
+    void Update()
+    {
+        if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
         {
-            GameManager.inst.Restart();
+            light.transform.rotation = Quaternion.Slerp(light.transform.rotation, Quaternion.LookRotation((target.transform.position - light.transform.position).normalized, Vector3.up), Time.deltaTime * 4.0f);
+        }
+        else
+        {
+            light.transform.rotation = Quaternion.Slerp(light.transform.rotation, Quaternion.Euler(60.0f, 90.0f, 0.0f), Time.deltaTime);
+        }
+        if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
+        {
+            StartRatTatTat();
+        }
+        else
+        {
+            ratatat = false;
+        }
+        if ((target.transform.position - transform.position).x < 3.0f)
+        {
+            GameManager.inst.PlayerCaught();
+            damping = 0.5f;
         }
     }
 
     private void AddSpringForce()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Floor"));
-        if (hit.collider != null)
+        RaycastHit2D hit0 = Physics2D.Raycast(transform.position, (Vector2.down + Vector2.left).normalized, Mathf.Infinity, LayerMask.GetMask("Floor"));
+        RaycastHit2D hit1 = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Floor"));
+        RaycastHit2D hit2 = Physics2D.Raycast(transform.position, (Vector2.down + Vector2.right).normalized, Mathf.Infinity, LayerMask.GetMask("Floor"));
+        
+        Vector3 dist = Vector3.up * 50.0f;
+        if (hit0.collider != null)
         {
-            Vector3 diff = Vector3.down * hit.distance;
-            diff = diff.normalized * Mathf.Min(diff.magnitude, 15.0f);
-            AddForce((diff - diff.normalized * (10.0f)) * springK);
+            Debug.DrawLine(transform.position, hit0.point, Color.green);
+            dist = Vector3.down * Mathf.Min(dist.magnitude, hit0.distance);
         }
-        else
+        if (hit1.collider != null)
         {
-            AddForce(Vector3.up * springK * 5.0f);
+            Debug.DrawLine(transform.position, hit1.point, Color.blue);
+            dist = Vector3.down * Mathf.Min(dist.magnitude, hit1.distance);
         }
+        if (hit2.collider != null)
+        {
+            Debug.DrawLine(transform.position, hit2.point, Color.red);
+            dist = Vector3.down * Mathf.Min(dist.magnitude, hit2.distance);
+        }
+        Debug.DrawRay(transform.position, dist, Color.yellow);
+        //dist = dist.normalized * Mathf.Min(dist.magnitude, 15.0f);
+        AddForce((dist - dist.normalized * (optimalDist)) * springK);
+        
     }
 
     private void AddFollowForce()
@@ -76,5 +119,24 @@ public class Craen120 : MonoBehaviour {
         prevPos = transform.position;
         target = FindObjectOfType<Character>();
         AddForce(Vector2.right * 200.0f);
+    }
+
+    private void StartRatTatTat()
+    {
+        ratatat = true; ;
+        if (!ratatating) StartCoroutine(Ratatat());
+    }
+
+    private IEnumerator Ratatat()
+    {
+        yield return null;
+        ratatating = true;
+        while (ratatat)
+        {
+            Debug.Log("RAT");
+            yield return new WaitForSeconds(0.15f);
+        }
+
+        ratatating = false;
     }
 }
