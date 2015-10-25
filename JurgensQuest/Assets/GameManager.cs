@@ -5,8 +5,10 @@ public class GameManager : MonoBehaviour {
     public static GameManager inst { get; private set; }
     public GameObject playerPrefab;
     public GameObject menuPanel;
+    
     public Timer raceTimer;
-
+    public float estFinishTime = 180.0f;
+    public UnityEngine.UI.Text scoreText;
 
     public AudioClip beginSound;
     public AudioClip[] loseSounds;
@@ -24,7 +26,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         inst = this;
-        if (playerPrefab == null) Debug.LogError("PleyerPrefab is null!");
+        if (playerPrefab == null) Debug.LogError("PlayerPrefab is null!");
         env = GameObject.Find("Environment");
         Restart();
 	}
@@ -54,6 +56,19 @@ public class GameManager : MonoBehaviour {
         gameEnded = true;
         PlayRandom(winSounds);
         menuPanel.SetActive(true);
+        scoreText.gameObject.SetActive(true);
+        int nChildrenAlive = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>()) {
+            nChildrenAlive += c.nChildren;
+        }
+        float score = (estFinishTime - raceTimer.elapsed);
+        if (score < 0.0f)
+        {
+            score = (float)nChildrenAlive / Mathf.Abs(score);
+        } else {
+            score *= nChildrenAlive;
+        }
+        scoreText.text = "Score: " + score;
         Freeze();
         //Restart();
     }
@@ -64,11 +79,13 @@ public class GameManager : MonoBehaviour {
         {
             body.drag = 300.0f;
         }
+        env.SendMessage("Freeze");
         raceTimer.paused = true;
     }
 
     public void Restart()
     {
+        scoreText.gameObject.SetActive(false);
         gameEnded = false;
         if (player != null) Destroy(player);
         player = Instantiate<GameObject>(playerPrefab);
