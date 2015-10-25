@@ -24,8 +24,8 @@ public class TrackGenerator : MonoBehaviour {
         mesh = new Mesh();
         Vector3[] vertices = new Vector3[list.Count * 2 + 2]; //
         Vector3[] normals = new Vector3[list.Count * 2 + 2];
-        vertices[0] = transform.forward * 10.0f;
-        vertices[1] = -transform.forward * 10.0f;
+        vertices[0] = transform.forward * 40.0f;
+        vertices[1] = -transform.forward * 40.0f;
         normals[0] = transform.up;
         normals[1] = transform.up;
         Vector2[] newUV = new Vector2[vertices.Length];
@@ -35,8 +35,8 @@ public class TrackGenerator : MonoBehaviour {
 
         for (int i = 0; i < list.Count; i++)
         {
-            vertices[i * 2 + 2] = list[i].transform.localPosition + transform.forward * 10.0f;
-            vertices[i * 2 + 3] = list[i].transform.localPosition - transform.forward * 10.0f;
+            vertices[i * 2 + 2] = list[i].transform.localPosition + transform.forward * 40.0f;
+            vertices[i * 2 + 3] = list[i].transform.localPosition - transform.forward * 40.0f;
             min = Vector3.Min(min, vertices[i * 2 + 2]);
             max = Vector3.Max(max, vertices[i * 2 + 2]);
             min = Vector3.Min(min, vertices[i * 2 + 3]);
