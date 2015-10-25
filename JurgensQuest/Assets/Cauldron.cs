@@ -5,7 +5,7 @@ public class Cauldron : MonoBehaviour {
     public Rigidbody2D childPrefab;
     private DistanceJoint2D joint;
     private Rigidbody2D rbody;
-    private float lastVel;
+    private Vector3 lastVel;
     public float bumpTreshold = 15.0f;
     public float bumpAngleThreshold = 20.0f;
     public float accellerationThreshold = 1.0f;
@@ -17,17 +17,17 @@ public class Cauldron : MonoBehaviour {
 	void Start () {
         joint = GetComponent<DistanceJoint2D>();
         rbody = GetComponent<Rigidbody2D>();
-        lastVel = rbody.velocity.magnitude;
+        lastVel = rbody.velocity;
         //joint.GetReactionTorque
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        float vel = rbody.velocity.magnitude;
-        float acc = Mathf.Abs((vel - lastVel) / Time.fixedDeltaTime);
+		Vector3 vel = rbody.velocity;
+        float acc = ((vel - lastVel) * (1.0f / Time.fixedDeltaTime)).magnitude;
         if (acc > accellerationThreshold)
         {
-            StartCoroutine(ChildrenOverboard((int)(acc * childrenPerNewton)));
+            //StartCoroutine(ChildrenOverboard((int)(acc * childrenPerNewton)));
         }
         lastVel = vel;
 	}
@@ -50,10 +50,14 @@ public class Cauldron : MonoBehaviour {
     {
         foreach (ContactPoint2D c in coll.contacts) // Check if the impact velocity is beyond threshold
         {
-            float impactVel = Vector3.Project(coll.relativeVelocity, c.normal).magnitude;
+			Debug.DrawRay(c.point, Vector3.Project(lastVel, c.normal), Color.yellow, 300.0f);
+			Debug.DrawRay(c.point, lastVel, Color.red, 300.0f); //coll.relativeVelocity
+            float impactVel = Vector3.Project(lastVel, c.normal).magnitude;
+
             if (Vector3.Angle(c.normal, rbody.velocity.normalized) > bumpAngleThreshold && impactVel > bumpTreshold)
             {
-                StartCoroutine(ChildrenOverboard((int)(impactVel * childrenPerMS)));
+				Debug.Log(impactVel);
+                StartCoroutine(ChildrenOverboard((int)((impactVel-bumpTreshold) * childrenPerMS)));
             }
         }
     }

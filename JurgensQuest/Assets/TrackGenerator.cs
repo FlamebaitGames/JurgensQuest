@@ -9,23 +9,15 @@ using UnityEditor;
 public class TrackGenerator : MonoBehaviour {
     private List<Segment> list;
     private EdgeCollider2D collider;
-    public Segment segmentPrefab;
-    private LineRenderer lineRender;
     private Mesh mesh;
 
 	void Start () {
         collider = GetComponent<EdgeCollider2D>();
-        lineRender = GetComponent<LineRenderer>();
 #if UNITY_EDITOR
-        
-        lineRender.enabled = true;
-#else 
-        lineRender.enabled = false;
-#endif
         InitializeNodes();
-        GenerateMesh();
-       
+#endif
 	}
+#if UNITY_EDITOR
     [ContextMenu("Generate Mesh")]
     private void GenerateMesh()
     {
@@ -53,30 +45,17 @@ public class TrackGenerator : MonoBehaviour {
             Debug.Log(normal.normalized);
             normals[i] = normal.normalized;
         }*/
-        Debug.Log(vertices[vertices.Length - 1]);
-        Debug.Log(vertices[vertices.Length - 2]);
-        Debug.Log(vertices[vertices.Length - 3]);
-        Debug.Log(vertices[vertices.Length - 4]);
         int[] triangles = new int[(vertices.Length - 2) * 6];
-        Debug.Log(triangles.Length);
 
         for (int i = 0; i < (vertices.Length - 2); i = i + 2)
         {
             triangles[i * 6] = i + 3;
             triangles[i * 6 + 1] = i + 1;
             triangles[i * 6 + 2] = i;
-            Debug.Log(i + " : " + (i + 1) + " : " + (i + 3));
             triangles[i * 6 + 3] = i + 2;
             triangles[i * 6 + 4] = i + 3;
             triangles[i * 6 + 5] = i;
-            Debug.Log((i) + " : " + (i + 3) + " : " + (i + 2)); Debug.Log(i);
         }
-
-        //Debug.Log(triangles[0]);
-        Debug.Log(triangles[triangles.Length - 1]);
-        Debug.Log(triangles[triangles.Length - 2]);
-        Debug.Log(triangles[triangles.Length - 3]);
-        Debug.Log(vertices.Length);
         mesh.vertices = vertices;
         //mesh.normals = normals;
         mesh.triangles = triangles;
@@ -95,6 +74,8 @@ public class TrackGenerator : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = mesh;
             
     }
+#endif
+
 	void Update () {
 #if UNITY_EDITOR // So that we can see our nodes and path
         if (!Application.isPlaying)
@@ -180,11 +161,6 @@ public class TrackGenerator : MonoBehaviour {
             p[i] = new Vector2(s.transform.localPosition.x, s.transform.localPosition.y);
         }
         collider.points = p;
-        lineRender.SetVertexCount(p.Length);
-        for (int j = 0; j < p.Length; j++)
-        {
-            lineRender.SetPosition(j, new Vector3(p[j].x, p[j].y));
-        }
                 
     }
 }
