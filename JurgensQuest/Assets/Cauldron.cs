@@ -8,7 +8,9 @@ public class Cauldron : MonoBehaviour {
     private float lastVel;
     public float bumpTreshold = 15.0f;
     public float bumpAngleThreshold = 20.0f;
-    public float velocityThreshold = 1.0f;
+    public float accellerationThreshold = 1.0f;
+    public float childrenPerMS = 1.0f;
+    public float childrenPerNewton = 1.0f;
     public int nChildren = 20;
 
 	// Use this for initialization
@@ -22,9 +24,10 @@ public class Cauldron : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         float vel = rbody.velocity.magnitude;
-        if (Mathf.Abs(vel / Time.fixedDeltaTime - lastVel / Time.fixedDeltaTime) > velocityThreshold)
+        float acc = Mathf.Abs((vel - lastVel) / Time.fixedDeltaTime);
+        if (acc > accellerationThreshold)
         {
-            StartCoroutine(ChildrenOverboard(4));
+            StartCoroutine(ChildrenOverboard((int)(acc * childrenPerNewton)));
         }
         lastVel = vel;
 	}
@@ -47,9 +50,10 @@ public class Cauldron : MonoBehaviour {
     {
         foreach (ContactPoint2D c in coll.contacts) // Check if the impact velocity is beyond threshold
         {
-            if (Vector3.Angle(c.normal, rbody.velocity.normalized) > bumpAngleThreshold && Vector3.Project(coll.relativeVelocity, c.normal).magnitude > bumpTreshold)
+            float impactVel = Vector3.Project(coll.relativeVelocity, c.normal).magnitude;
+            if (Vector3.Angle(c.normal, rbody.velocity.normalized) > bumpAngleThreshold && impactVel > bumpTreshold)
             {
-                StartCoroutine(ChildrenOverboard(7));
+                StartCoroutine(ChildrenOverboard((int)(impactVel * childrenPerMS)));
             }
         }
     }
