@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour {
 
     public void Quit()
     {
+		Debug.Log ("QUIT");
         Application.LoadLevel(0);
     }
 
