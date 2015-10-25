@@ -42,10 +42,8 @@ public class GameManager : MonoBehaviour {
     {
         if (gameEnded) return;
         gameEnded = true;
-        foreach( Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>() ) {
-            body.drag = 300.0f;
-        }
-        raceTimer.paused = true;
+        Freeze();
+        
         menuPanel.SetActive(true);
         PlayRandom(loseSounds);
     }
@@ -56,7 +54,17 @@ public class GameManager : MonoBehaviour {
         gameEnded = true;
         PlayRandom(winSounds);
         menuPanel.SetActive(true);
+        Freeze();
         //Restart();
+    }
+
+    private void Freeze()
+    {
+        foreach (Rigidbody2D body in player.GetComponentsInChildren<Rigidbody2D>())
+        {
+            body.drag = 300.0f;
+        }
+        raceTimer.paused = true;
     }
 
     public void Restart()
