@@ -75,6 +75,7 @@ ModelImporter:
     100134: shoulders_ctrl_group
     100136: spine_1_joint
     100138: spine_2_joint
+    100140: polySurface11
     400000: group10
     400002: group11
     400004: group12
@@ -145,15 +146,19 @@ ModelImporter:
     400134: shoulders_ctrl_group
     400136: spine_1_joint
     400138: spine_2_joint
+    400140: polySurface11
     2300000: pCube5
     2300002: pCube6
+    2300004: polySurface11
     3300000: pCube5
     3300002: pCube6
+    3300004: polySurface11
     4300000: polySurface6
     4300002: polySurface8
     4300004: polySurface9
     4300006: pCube5
     4300008: pCube6
+    4300010: polySurface11
     7400000: Take 001
     9500000: //RootNode
     13700000: polySurface6
