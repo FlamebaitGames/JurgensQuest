@@ -1,25 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class Cauldron : MonoBehaviour {
     public Rigidbody2D childPrefab;
     private DistanceJoint2D joint;
     private Rigidbody2D rbody;
     private Vector3 lastVel;
+    
     public float bumpTreshold = 15.0f;
     public float bumpAngleThreshold = 20.0f;
     public float accellerationThreshold = 1.0f;
     public float childrenPerMS = 1.0f;
     public float childrenPerNewton = 1.0f;
     public int nChildren = 20;
+    public AudioClip[] bounceSounds;
+    private int nStartChildren;
+    private bool grounded
+    {
+        get
+        {
+            return Physics2D.CircleCast(transform.position, GetComponent<CircleCollider2D>().radius * 1.2f, Vector2.down, 1.0f, LayerMask.GetMask("Floor")).collider != null;
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
         joint = GetComponent<DistanceJoint2D>();
         rbody = GetComponent<Rigidbody2D>();
         lastVel = rbody.velocity;
+        nStartChildren = nChildren;
         //joint.GetReactionTorque
 	}
+    void Update()
+    {
+         AudioSource s = GetComponent<AudioSource>();
+         s.volume = rbody.velocity.magnitude / 1000.0f;
+        if (grounded)
+        {
+           
+            if (!s.isPlaying) s.Play();
+        }
+        else
+        {
+            s.Stop();
+        }
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -40,6 +66,12 @@ public class Cauldron : MonoBehaviour {
             o.position = transform.position;
             o.velocity = Vector2.up * 10.0f;
             nChildren--;
+            int nRepresentatives = transform.childCount;
+            int nVisible = Mathf.CeilToInt((float)nRepresentatives * ((float)nChildren / (float)nStartChildren));
+            for (int j = 0; j < transform.childCount; j++)
+            {
+                transform.GetChild(j).gameObject.SetActive(j < nVisible);
+            }
             yield return new WaitForSeconds(Random.Range(0.0f, 0.2f));
         }
             yield return null;
@@ -60,5 +92,11 @@ public class Cauldron : MonoBehaviour {
                 StartCoroutine(ChildrenOverboard((int)((impactVel-bumpTreshold) * childrenPerMS)));
             }
         }
+    }
+
+    private void PlayBounce()
+    {
+        if (bounceSounds.Length == 0) return;
+        GetComponent<AudioSource>().PlayOneShot(bounceSounds[Random.Range(0, bounceSounds.Length - 1)]);
     }
 }

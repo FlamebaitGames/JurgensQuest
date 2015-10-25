@@ -7,4 +7,8 @@ public class MenuManager : MonoBehaviour {
     {
         Application.LoadLevel(name);
     }
+
+	public void Exit() {
+		Application.Quit ();
+	}
 }

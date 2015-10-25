@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+[RequireComponent(typeof(AudioSource))]
 public class Craen120 : MonoBehaviour {
 
 
@@ -29,6 +29,12 @@ public class Craen120 : MonoBehaviour {
         light = GetComponentInChildren<Light>();
         transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -30.0f));
 	}
+
+    public void Freeze()
+    {
+        damping = 0.95f;
+        ratatat = false;
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -60,8 +66,6 @@ public class Craen120 : MonoBehaviour {
         if ((target.transform.position - transform.position).x < 3.0f)
         {
             GameManager.inst.PlayerCaught();
-            damping = 0.95f;
-            ratatat = false;
         }
         else if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
         {
@@ -126,7 +130,8 @@ public class Craen120 : MonoBehaviour {
         while (ratatat)
         {
             Debug.Log("RAT");
-            yield return new WaitForSeconds(0.15f);
+            GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
+            yield return new WaitForSeconds(0.5f);
         }
 
         ratatating = false;

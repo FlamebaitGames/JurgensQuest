@@ -8,4 +8,9 @@ public class Environment : MonoBehaviour {
     {
         BroadcastMessage("OnReset");
     }
+
+    public void Freeze()
+    {
+        helicopter.Freeze();
+    }
 }
