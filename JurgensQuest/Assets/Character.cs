@@ -7,6 +7,7 @@ using UnityEditor;
 public class Character : MonoBehaviour {
     private Rigidbody2D rBody;
     private FixedJoint joint;
+	public float gravMultiplier = 2.0f;
 	// Use this for initialization
 	void Start () {
         rBody = GetComponent<Rigidbody2D>();
@@ -17,11 +18,11 @@ public class Character : MonoBehaviour {
 	void Update () {
         if (Input.GetButtonDown("Grav"))
         {
-            rBody.gravityScale *= 2;
+			rBody.gravityScale *= gravMultiplier;
         }
         if (Input.GetButtonUp("Grav"))
         {
-            rBody.gravityScale /= 2;
+			rBody.gravityScale /= gravMultiplier;
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
