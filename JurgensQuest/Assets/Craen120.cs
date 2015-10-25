@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+[RequireComponent(typeof(AudioSource))]
 public class Craen120 : MonoBehaviour {
 
 
@@ -126,7 +126,8 @@ public class Craen120 : MonoBehaviour {
         while (ratatat)
         {
             Debug.Log("RAT");
-            yield return new WaitForSeconds(0.15f);
+            GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
+            yield return new WaitForSeconds(0.5f);
         }
 
         ratatating = false;
