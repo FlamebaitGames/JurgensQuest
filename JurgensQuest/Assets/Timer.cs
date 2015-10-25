@@ -15,7 +15,7 @@ public class Timer : MonoBehaviour {
         if (!paused)
         {
             elapsed = Time.time - startAt;
-            text.text = elapsed.ToString();
+			text.text = Mathf.Floor(elapsed).ToString();
         }
 	}
 
