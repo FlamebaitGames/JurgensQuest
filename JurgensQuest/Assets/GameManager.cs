@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     public Timer raceTimer;
     public float estFinishTime = 180.0f;
     public UnityEngine.UI.Text scoreText;
+    public UnityEngine.UI.Text babyText;
 
     public AudioClip beginSound;
     public AudioClip[] loseSounds;
@@ -37,6 +38,13 @@ public class GameManager : MonoBehaviour {
         {
             menuPanel.SetActive(!menuPanel.activeSelf);
         }
+
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        babyText.text = "Children Left: " + nBabbysLeft;
 	}
 
 
@@ -72,6 +80,8 @@ public class GameManager : MonoBehaviour {
         Freeze();
         //Restart();
     }
+
+    
 
     private void Freeze()
     {
