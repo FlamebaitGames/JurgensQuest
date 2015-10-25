@@ -35,6 +35,12 @@ ModelImporter:
     100054: transform44
     100056: transform45
     100058: //RootNode
+    100060: polySurface46
+    100062: polySurface47
+    100064: polySurface48
+    100066: transform57
+    100068: transform58
+    100070: transform59
     400000: polySurface29
     400002: polySurface30
     400004: polySurface31
@@ -65,9 +71,18 @@ ModelImporter:
     400054: transform44
     400056: transform45
     400058: //RootNode
+    400060: polySurface46
+    400062: polySurface47
+    400064: polySurface48
+    400066: transform57
+    400068: transform58
+    400070: transform59
     2300000: polySurface37
+    2300002: polySurface48
     3300000: polySurface37
+    3300002: polySurface48
     4300000: polySurface37
+    4300002: polySurface48
     9500000: //RootNode
   materials:
     importMaterials: 1
