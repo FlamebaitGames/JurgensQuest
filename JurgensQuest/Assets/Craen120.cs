@@ -4,16 +4,15 @@ using System.Collections;
 public class Craen120 : MonoBehaviour {
 
 
-    private Vector3 startPosition { get { return Vector3.up * optimalDist; } }
+    private Vector3 startPosition { get { return Vector3.up * optimalHeight; } }
     public float mass = 1.0f;
-    private float damping = 0.0f;
+    public float damping = 0.02f;
     private float invMass;
     private Vector3 prevPos;
     private Vector3 force = Vector3.zero;
     public float springK = 10.0f;
-    public float followFactor = 0.5f;
-    public float maxFollowSpeed = 1.5f;
-    public float optimalDist = 10.0f;
+    public float optimalHeight = 10.0f;
+    public float flySpeed = 200.0f;
 
     private bool ratatat = false;
     private bool ratatating = false;
@@ -28,6 +27,7 @@ public class Craen120 : MonoBehaviour {
 	void Start () {
         invMass = 1.0f / mass;
         light = GetComponentInChildren<Light>();
+        transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, -30.0f));
 	}
 	
 	// Update is called once per frame
@@ -40,8 +40,9 @@ public class Craen120 : MonoBehaviour {
         prevPos = transform.position;
         transform.position = nPos;
         force = Vector3.zero;
-        
 
+        
+        AddForce(Vector2.right * (flySpeed - xVelocity));
         
     }
 
@@ -59,7 +60,7 @@ public class Craen120 : MonoBehaviour {
         if ((target.transform.position - transform.position).x < 3.0f)
         {
             GameManager.inst.PlayerCaught();
-            damping = 0.5f;
+            damping = 0.95f;
             ratatat = false;
         }
         else if (Vector3.Distance(transform.position, target.transform.position) < 30.0f)
@@ -96,18 +97,8 @@ public class Craen120 : MonoBehaviour {
         }
         Debug.DrawRay(transform.position, dist, Color.yellow);
         //dist = dist.normalized * Mathf.Min(dist.magnitude, 15.0f);
-        AddForce((dist - dist.normalized * (optimalDist)) * springK);
+        AddForce((dist - dist.normalized * (optimalHeight)) * springK);
         
-    }
-
-    private void AddFollowForce()
-    {
-        //AddForce(Vector2.right);
-        Vector3 diff = target.transform.position - transform.position;
-        diff.y = 0;
-        diff = diff.normalized * Mathf.Min(diff.magnitude * followFactor, maxFollowSpeed);
-
-        transform.position += (diff) * Time.deltaTime;
     }
 
     public void AddForce(Vector3 force)
@@ -120,7 +111,7 @@ public class Craen120 : MonoBehaviour {
         transform.position = startPosition;
         prevPos = transform.position;
         target = FindObjectOfType<Character>();
-        AddForce(Vector2.right * 200.0f);
+        
     }
 
     private void StartRatTatTat()
