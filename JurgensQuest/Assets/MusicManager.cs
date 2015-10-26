@@ -15,7 +15,7 @@ public class MusicManager : MonoBehaviour {
     public void Restart()
     {
         musicInit.Play();
-        musicLoop.PlayDelayed((ulong)musicInit.clip.samples);
+        musicLoop.PlayDelayed(musicInit.clip.length);//(ulong)musicInit.clip.samples);
     }
 	
 	// Update is called once per frame
