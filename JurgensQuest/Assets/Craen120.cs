@@ -6,7 +6,7 @@ public class Craen120 : MonoBehaviour {
 
     private Vector3 startPosition { get { return Vector3.up * optimalHeight; } }
     public float mass = 1.0f;
-    public float damping = 0.02f;
+    private float damping = 0.02f;
     private float invMass;
     private Vector3 prevPos;
     private Vector3 force = Vector3.zero;
@@ -115,7 +115,7 @@ public class Craen120 : MonoBehaviour {
         transform.position = startPosition;
         prevPos = transform.position;
         target = FindObjectOfType<Character>();
-        
+        damping = 0.02f;
     }
 
     private void StartRatTatTat()
