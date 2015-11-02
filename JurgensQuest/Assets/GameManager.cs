@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour {
             nBabbysLeft += c.nChildren;
         }
         babyText.text = "Children Left: " + nBabbysLeft;
+        if (nBabbysLeft <= 0) CargoLost();
 	}
 
 
@@ -67,6 +68,28 @@ public class GameManager : MonoBehaviour {
         Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
             {"level", Application.loadedLevelName},
             {"cause", "helicopter"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
+    }
+
+    public void CargoLost()
+    {
+        if (gameEnded) return;
+        gameEnded = true;
+        Freeze();
+
+        menuPanel.SetActive(true);
+        PlayRandom(loseSounds);
+
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "cargoLost"},
             {"time", raceTimer.elapsed},
             {"childrenLeft", nBabbysLeft}
         });
