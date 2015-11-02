@@ -48,11 +48,15 @@ public class Character : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             // Alter flag position
-            GameObject g = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab")) as GameObject;
-            g.transform.position = transform.position;
-            g.transform.rotation = transform.rotation;
-            GameObject o = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
-            PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
+            GameObject t = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
+            if(t != null) {
+                GameObject g = PrefabUtility.InstantiatePrefab(t) as GameObject;
+                g.transform.position = transform.position;
+                g.transform.rotation = transform.rotation;
+                GameObject o = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
+                PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
+            }
+            
         }
 #endif
 
