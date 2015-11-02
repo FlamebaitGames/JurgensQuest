@@ -44,13 +44,6 @@ public class Character : MonoBehaviour {
         flying = Mathf.MoveTowards(flying, (grounded ? 0.0f : 1.0f), Time.deltaTime);
         animator.SetFloat("Grounded", flying);
         
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            //rBody.AddTorque(300.0f);
-            foreach(Rigidbody2D r in transform.parent.GetComponentsInChildren<Rigidbody2D>()) {
-                r.AddForceAtPosition(Vector2.up * 900, rBody.position - (Vector2)(transform.right * 3.0f));
-            }
-        }
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
