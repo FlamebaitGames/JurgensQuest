@@ -40,6 +40,7 @@ public class Character : MonoBehaviour {
             animator.SetTrigger("EndHunker");
         }
 
+        animator.SetBool("Hunker", Input.GetButton("Grav"));
         flying = Mathf.MoveTowards(flying, (grounded ? 0.0f : 1.0f), Time.deltaTime);
         animator.SetFloat("Grounded", flying);
         
