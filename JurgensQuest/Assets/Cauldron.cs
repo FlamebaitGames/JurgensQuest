@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
+using UnityAnalyticsHeatmap;
 [RequireComponent(typeof(AudioSource))]
 public class Cauldron : MonoBehaviour {
     public Rigidbody2D childPrefab;
@@ -60,6 +61,7 @@ public class Cauldron : MonoBehaviour {
 
     private IEnumerator ChildrenOverboard(int amount)
     {
+        HeatmapEvent.Send("childrenOverboard", transform.position, GameManager.inst.raceTimer.elapsed, new Dictionary<string, object> { {"count", amount} });
         for (int i = 0; i < amount && nChildren > 0; i++)
         {
             Rigidbody2D o = Instantiate<Rigidbody2D>(childPrefab);
