@@ -130,7 +130,13 @@ public class Craen120 : MonoBehaviour {
         while (ratatat)
         {
             Debug.Log("RAT");
-            GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
+
+			if(GetComponent<AudioSource>().isPlaying);
+			{
+			
+				GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
+			}
+
             yield return new WaitForSeconds(0.5f);
         }
 

@@ -44,22 +44,19 @@ public class Character : MonoBehaviour {
         flying = Mathf.MoveTowards(flying, (grounded ? 0.0f : 1.0f), Time.deltaTime);
         animator.SetFloat("Grounded", flying);
         
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            //rBody.AddTorque(300.0f);
-            foreach(Rigidbody2D r in transform.parent.GetComponentsInChildren<Rigidbody2D>()) {
-                r.AddForceAtPosition(Vector2.up * 900, rBody.position - (Vector2)(transform.right * 3.0f));
-            }
-        }
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
             // Alter flag position
-            GameObject g = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab")) as GameObject;
-            g.transform.position = transform.position;
-            g.transform.rotation = transform.rotation;
-            GameObject o = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
-            PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
+            GameObject t = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
+            if(t != null) {
+                GameObject g = PrefabUtility.InstantiatePrefab(t) as GameObject;
+                g.transform.position = transform.position;
+                g.transform.rotation = transform.rotation;
+                GameObject o = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Private/Marker.prefab");
+                PrefabUtility.ReplacePrefab(g, o, ReplacePrefabOptions.ConnectToPrefab);
+            }
+            
         }
 #endif
 

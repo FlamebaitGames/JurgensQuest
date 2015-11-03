@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Analytics;
+using System.Collections.Generic;
 [RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour {
     public static GameManager inst { get; private set; }
@@ -22,8 +24,8 @@ public class GameManager : MonoBehaviour {
     private GameObject env;
 
     private bool gameEnded = false;
-    
 
+    private int roundsPlayed = 0;
 	// Use this for initialization
 	void Start () {
         inst = this;
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour {
             nBabbysLeft += c.nChildren;
         }
         babyText.text = "Children Left: " + nBabbysLeft;
+        if (nBabbysLeft <= 0) CargoLost();
 	}
 
 
@@ -56,6 +59,40 @@ public class GameManager : MonoBehaviour {
         
         menuPanel.SetActive(true);
         PlayRandom(loseSounds);
+
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "helicopter"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
+    }
+
+    public void CargoLost()
+    {
+        if (gameEnded) return;
+        gameEnded = true;
+        Freeze();
+
+        menuPanel.SetActive(true);
+        PlayRandom(loseSounds);
+
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "cargoLost"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
     }
 
     public void Finish()
@@ -79,6 +116,18 @@ public class GameManager : MonoBehaviour {
         scoreText.text = "Score: " + score;
         Freeze();
         //Restart();
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "finished"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
+
     }
 
     
@@ -105,16 +154,54 @@ public class GameManager : MonoBehaviour {
         if(env != null) env.SendMessage("Reset");
         GetComponent<AudioSource>().PlayOneShot(beginSound);
         FindObjectOfType<MusicManager>().Restart();
+        
+        //Analytics.CustomEvent("newRound", new Dictionary<string, object> { });
+        roundsPlayed++;
     }
 
     public void Quit()
     {
-		Debug.Log ("QUIT");
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "quit to menu"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
+        Analytics.CustomEvent("leaveLevel", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"nRoundsPlayed", roundsPlayed}
+        });
         Application.LoadLevel(0);
+    }
+
+    void OnApplicationQuit()
+    {
+        int nBabbysLeft = 0;
+        foreach (Cauldron c in player.GetComponentsInChildren<Cauldron>())
+        {
+            nBabbysLeft += c.nChildren;
+        }
+        Analytics.CustomEvent("roundEnd", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"cause", "quit to desktop"},
+            {"time", raceTimer.elapsed},
+            {"childrenLeft", nBabbysLeft}
+        });
+        Analytics.CustomEvent("quit", new Dictionary<string, object> {
+            {"level", Application.loadedLevelName},
+            {"nRoundsPlayed", roundsPlayed},
+            {"timePlayed", Time.realtimeSinceStartup}
+        });
     }
 
     public void ExitToDesktop()
     {
+        
         Application.Quit();
     }
 
