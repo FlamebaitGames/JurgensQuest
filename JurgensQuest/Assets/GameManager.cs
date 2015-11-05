@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager inst { get; private set; }
     public GameObject playerPrefab;
     public GameObject menuPanel;
+    public HighScorePanel highScorePanel;
     
     public Timer raceTimer;
     public float estFinishTime = 180.0f;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour {
         inst = this;
         if (playerPrefab == null) Debug.LogError("PlayerPrefab is null!");
         env = GameObject.Find("Environment");
+        
         Restart();
 	}
 	
@@ -114,6 +116,9 @@ public class GameManager : MonoBehaviour {
             score *= nChildrenAlive;
         }
         scoreText.text = "Score: " + score;
+        highScorePanel.Show();
+        highScorePanel.AddNewScore((int)score);
+        
         Freeze();
         //Restart();
         int nBabbysLeft = 0;
@@ -145,6 +150,7 @@ public class GameManager : MonoBehaviour {
     public void Restart()
     {
         scoreText.gameObject.SetActive(false);
+        highScorePanel.Hide();
         gameEnded = false;
         if (player != null) Destroy(player);
         player = Instantiate<GameObject>(playerPrefab);
