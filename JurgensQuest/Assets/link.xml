@@ -1,0 +1,6 @@
+<linker>
+	<assembly fullname="UnityEngine">
+		<type fullname="UnityEngine.Resources" preserve="all"/>
+		<type fullname="UnityEngine.TextAsset" preserve="all"/>
+	</assembly>
+</linker>

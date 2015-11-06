@@ -14,8 +14,12 @@ public class MusicManager : MonoBehaviour {
 
     public void Restart()
     {
+        StopAllCoroutines();
+        musicInit.Stop();
+        musicLoop.Stop();
         musicInit.Play();
-        musicLoop.PlayDelayed(musicInit.clip.length);//(ulong)musicInit.clip.samples);
+        StartCoroutine(PlayDelay(musicInit.clip.length));
+        //musicLoop.PlayDelayed(musicInit.clip.length);//(ulong)musicInit.clip.samples);
     }
 	
 	// Update is called once per frame
@@ -28,7 +32,11 @@ public class MusicManager : MonoBehaviour {
 			audio.
 		}*/
 	}
-
+    private IEnumerator PlayDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        musicLoop.Play();
+    }
 	/*private IEnumerator PlayList() {
 		audio.Play ();
 		yield return new WaitForSeconds (audio.clip.length);

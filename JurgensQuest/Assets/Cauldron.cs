@@ -62,7 +62,7 @@ public class Cauldron : MonoBehaviour {
 
     private IEnumerator ChildrenOverboard(int amount)
     {
-        HeatmapEvent.Send("childrenOverboard", transform, GameManager.inst.raceTimer.elapsed, new Dictionary<string, object> { {"count", amount} });
+        //HeatmapEvent.Send("childrenOverboard", transform, GameManager.inst.raceTimer.elapsed, new Dictionary<string, object> { {"count", amount} });
         
         for (int i = 0; i < amount && nChildren > 0; i++)
         {

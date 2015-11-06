@@ -126,6 +126,7 @@ public class Craen120 : MonoBehaviour {
 
     private IEnumerator Ratatat()
     {
+        
         ratatating = true;
         while (ratatat)
         {
@@ -137,7 +138,7 @@ public class Craen120 : MonoBehaviour {
 				GetComponent<AudioSource>().PlayOneShot(GetComponent<AudioSource>().clip);
 			}
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(3.0f);
         }
 
         ratatating = false;
