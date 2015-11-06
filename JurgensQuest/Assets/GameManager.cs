@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
         {
             nBabbysLeft += c.nChildren;
         }
-        babyText.text = "Children Left: " + nBabbysLeft;
+        babyText.text = "Elves Left: " + nBabbysLeft;
         if (nBabbysLeft <= 0) CargoLost();
 	}
 
